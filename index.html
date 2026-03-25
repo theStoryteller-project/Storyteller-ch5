@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Storyteller — Chapter V</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --panel: #0e0e0e;
+    --border: #1a1a1a;
+    --border-accent: #252525;
+    --yellow: #f0c040;
+    --yellow-dim: #8a6e20;
+    --yellow-glow: rgba(240,192,64,0.3);
+    --red: #e03030;
+    --red-dim: #6b1a1a;
+    --green: #00cc66;
+    --green-dim: #003d1f;
+    --green-glow: rgba(0,204,102,0.25);
+    --text: #b8b8b8;
+    --text-dim: #666;
+    --text-bright: #e8e8e8;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Orbitron', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+    --serif: 'Cinzel', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 17px; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px); pointer-events: none; z-index: 1000; }
+  #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .vignette { position: fixed; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%); pointer-events: none; z-index: 1; }
+  .content-wrap { position: relative; z-index: 2; }
+
+  header { padding: 36px 40px 24px; border-bottom: 1px solid var(--border); position: relative; }
+  header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--yellow-dim), transparent); }
+  .logo { font-family: var(--display); font-size: 3.4rem; font-weight: 900; letter-spacing: 0.02em; line-height: 1; color: var(--yellow); text-shadow: 0 0 40px rgba(240,192,64,0.15); animation: logoGlow 4s ease-in-out infinite alternate; }
+  .logo span { color: var(--red); text-shadow: 0 0 40px rgba(224,48,48,0.15); }
+  @keyframes logoGlow { 0% { text-shadow: 0 0 30px rgba(240,192,64,0.1); } 100% { text-shadow: 0 0 50px rgba(240,192,64,0.2); } }
+  .subtitle-arch { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; letter-spacing: 0.12em; color: #999; margin-top: 10px; }
+  .subtitle-line { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.18em; color: var(--text-dim); margin-top: 6px; text-transform: uppercase; }
+
+  .instructions-banner { padding: 20px 40px; border-bottom: 1px solid var(--border); background: linear-gradient(90deg, rgba(240,192,64,0.04), transparent); }
+  .instructions-text { font-family: var(--body); font-size: 1.1rem; font-weight: 400; color: var(--text-bright); letter-spacing: 0.04em; line-height: 1.8; }
+  .instructions-text strong { color: var(--yellow); font-weight: 600; }
+
+  main { max-width: 940px; margin: 0 auto; padding: 40px 40px 100px; }
+  .section-title { font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+  .discord-block { background: var(--panel); border: 1px solid var(--border-accent); padding: 28px 32px; margin-bottom: 32px; position: relative; }
+  .discord-block::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--yellow); box-shadow: 0 0 12px var(--yellow-glow); }
+  .field-label { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px; }
+  input[type="text"] { background: #0a0a0a; border: 1px solid var(--border-accent); color: var(--yellow); font-family: var(--mono); font-size: 1rem; padding: 12px 16px; width: 100%; outline: none; letter-spacing: 0.08em; transition: border-color 0.3s, box-shadow 0.3s; }
+  input[type="text"]:focus { border-color: var(--yellow); box-shadow: 0 0 20px rgba(240,192,64,0.08); }
+  input[type="text"]::placeholder { color: #444; font-size: 0.75rem; }
+  input[type="text"]:disabled { opacity: 0.4; cursor: not-allowed; }
+  .hint { font-family: var(--mono); font-size: 0.75rem; color: #888; letter-spacing: 0.08em; margin-top: 8px; }
+
+  .submit-btn { margin-top: 20px; background: transparent; border: 1px solid var(--yellow); color: var(--yellow); font-family: var(--mono); font-size: 0.9rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 16px 36px; cursor: pointer; transition: all 0.3s; }
+  .submit-btn:hover:not(:disabled) { background: var(--yellow); color: #000; }
+  .submit-btn:disabled { opacity: 0.25; cursor: not-allowed; border-color: #333; color: #333; }
+
+  .info-box { padding: 12px 18px; border: 1px solid; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; margin-bottom: 24px; display: none; }
+  .info-box.error { border-color: var(--red); color: var(--red); background: rgba(139,26,26,0.1); }
+  .info-box.show { display: block; }
+
+  .riddles-grid { display: flex; flex-direction: column; gap: 16px; }
+  .riddle-card.stanza-end { margin-bottom: 28px; }
+  .riddle-card { background: var(--panel); border: 1px solid var(--border); position: relative; transition: all 0.5s ease; overflow: hidden; opacity: 0; transform: translateY(20px); }
+  .riddle-card.entered { opacity: 1; transform: translateY(0); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .riddle-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: #333; transition: background 0.5s, box-shadow 0.5s; }
+  .riddle-card:hover { border-color: var(--border-accent); }
+
+  .layer-indicator { position: absolute; top: 14px; right: 16px; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 10px; border: 1px solid transparent; transition: all 0.4s; }
+  .layer-indicator.layer-1 { color: #666; border-color: #333; background: rgba(255,255,255,0.02); }
+  .layer-indicator.layer-2 { color: var(--yellow); border-color: rgba(240,192,64,0.35); background: rgba(240,192,64,0.06); text-shadow: 0 0 8px rgba(240,192,64,0.2); }
+  .layer-indicator.layer-3 { color: var(--red); border-color: rgba(224,48,48,0.4); background: rgba(224,48,48,0.08); text-shadow: 0 0 8px rgba(224,48,48,0.25); animation: layerPulse 2s ease infinite; }
+  @keyframes layerPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+
+  .riddle-card.solved { border-color: var(--green-dim); animation: solvedPulse 1.5s ease; }
+  .riddle-card.solved::before { background: var(--green); box-shadow: 0 0 16px var(--green-glow); }
+  .riddle-card.wrong-flash { animation: wrongShake 0.5s ease; }
+  .riddle-card.wrong-flash::before { background: var(--red) !important; box-shadow: 0 0 16px rgba(224,48,48,0.3); }
+  .riddle-card.layer-shift .riddle-text-content { animation: layerReveal 0.8s ease; }
+
+  @keyframes wrongShake { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-6px); } 30% { transform: translateX(6px); } 45% { transform: translateX(-4px); } 60% { transform: translateX(4px); } 75% { transform: translateX(-2px); } }
+  @keyframes layerReveal { 0% { opacity: 0; transform: translateY(8px); filter: blur(4px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+  @keyframes solvedPulse { 0% { box-shadow: 0 0 0 0 rgba(0,204,102,0.4); } 50% { box-shadow: 0 0 40px 6px rgba(0,204,102,0.15); } 100% { box-shadow: 0 0 0 0 rgba(0,204,102,0.0); } }
+
+  .riddle-header { display: flex; align-items: center; gap: 14px; padding: 16px 20px 0 20px; }
+  .riddle-num { font-family: var(--display); font-size: 0.7rem; font-weight: 700; color: #444; letter-spacing: 0.1em; min-width: 30px; transition: color 0.4s; }
+  .riddle-card.solved .riddle-num { color: var(--green-dim); }
+
+  .riddle-status-badge { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; padding: 3px 10px; text-transform: uppercase; border: 1px solid transparent; transition: all 0.4s; }
+  .badge-unsolved { color: #666; border-color: #333; }
+  .badge-solved { color: var(--green); border-color: var(--green-dim); background: rgba(0,204,102,0.05); }
+  .badge-cooldown { color: #666; border-color: #333; background: rgba(255,255,255,0.02); }
+
+  .riddle-body { padding: 14px 20px 20px; }
+  .riddle-text-content { font-family: var(--mono); font-size: 0.88rem; line-height: 2.1; color: var(--text); letter-spacing: 0.04em; white-space: pre-wrap; padding: 12px 0; min-height: 48px; transition: color 0.4s; }
+
+  .riddle-input-row { display: flex; gap: 10px; margin-top: 10px; }
+  .riddle-input-row input { flex: 1; font-size: 0.9rem; padding: 10px 14px; }
+  .riddle-guess-btn { background: transparent; border: 1px solid var(--border-accent); color: var(--text-dim); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; padding: 10px 22px; cursor: pointer; transition: all 0.3s; white-space: nowrap; }
+  .riddle-guess-btn:hover:not(:disabled) { border-color: var(--yellow); color: var(--yellow); }
+  .riddle-guess-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+
+  .cooldown-bar-wrap { height: 2px; background: #111; margin-top: 10px; overflow: hidden; opacity: 0; transition: opacity 0.3s; }
+  .cooldown-bar-wrap.active { opacity: 1; }
+  .cooldown-bar { height: 100%; background: linear-gradient(90deg, #444, #666); width: 0%; transition: width 0.5s linear; }
+  .cooldown-text { font-family: var(--mono); font-size: 0.65rem; color: #777; letter-spacing: 0.12em; margin-top: 6px; min-height: 14px; }
+
+  .poem-line-reveal { display: none; padding: 4px 0 0; }
+  .poem-line-reveal.visible { display: block; }
+  .poem-line-text { font-family: var(--body); font-size: 1.05rem; font-weight: 300; font-style: italic; color: var(--yellow); letter-spacing: 0.04em; line-height: 1.8; text-shadow: 0 0 20px rgba(240,192,64,0.15); min-height: 28px; animation: poemLineGlow 3s ease infinite alternate; }
+  @keyframes poemLineGlow { 0% { text-shadow: 0 0 15px rgba(240,192,64,0.1); } 100% { text-shadow: 0 0 30px rgba(240,192,64,0.2); } }
+  .poem-line-cursor { display: inline-block; width: 2px; height: 1em; background: var(--yellow); animation: blink 0.8s step-end infinite; vertical-align: text-bottom; margin-left: 2px; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .solved-champ-name { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--green-dim); text-transform: uppercase; margin-top: 8px; }
+
+  #finale-panel { display: none; margin-top: 48px; position: relative; padding: 40px; background: linear-gradient(135deg, rgba(240,192,64,0.04), rgba(224,48,48,0.02)); border: 1px solid #2a2200; }
+  #finale-panel::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(180deg, var(--yellow), var(--red)); box-shadow: 0 0 20px var(--yellow-glow); }
+  #finale-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, var(--yellow), transparent); }
+  .finale-title { font-family: var(--serif); font-size: 1.5rem; font-weight: 700; color: var(--yellow); letter-spacing: 0.14em; margin-bottom: 12px; text-shadow: 0 0 30px rgba(240,192,64,0.2); animation: finaleGlow 3s ease infinite alternate; }
+  @keyframes finaleGlow { 0% { text-shadow: 0 0 20px rgba(240,192,64,0.15); } 100% { text-shadow: 0 0 50px rgba(240,192,64,0.3); } }
+  .finale-subtitle { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 32px; }
+
+  .progress-section { margin-bottom: 28px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .progress-label { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; color: var(--text-dim); text-transform: uppercase; }
+  .progress-count { font-family: var(--display); font-size: 0.85rem; font-weight: 700; color: var(--yellow); }
+  .progress-bar-outer { height: 3px; background: #151515; position: relative; overflow: hidden; }
+  .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--green), var(--yellow)); width: 0%; transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 0 12px rgba(0,204,102,0.3); }
+
+
+  /* ── Subtle solve glow ── */
+  .riddle-card.solve-glow {
+    animation: solveWarmGlow 2.5s ease forwards;
+  }
+  @keyframes solveWarmGlow {
+    0% { box-shadow: 0 0 0 0 rgba(0,204,102,0); border-color: var(--border); }
+    15% { box-shadow: 0 0 30px 2px rgba(0,204,102,0.2); border-color: rgba(0,204,102,0.4); }
+    40% { box-shadow: 0 0 20px 1px rgba(240,192,64,0.15); border-color: rgba(240,192,64,0.3); }
+    100% { box-shadow: 0 0 0 0 rgba(0,204,102,0); border-color: var(--green-dim); }
+  }
+
+  /* Poem text enhanced entrance */
+  .poem-line-text.typewriting {
+    animation: poemTextEntrance 0.5s ease forwards;
+  }
+  @keyframes poemTextEntrance {
+    0% { opacity: 0; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Full poem in finale */
+  .finale-poem {
+    margin-bottom: 36px;
+    padding: 24px 0;
+    border-top: 1px solid rgba(240,192,64,0.1);
+    border-bottom: 1px solid rgba(240,192,64,0.1);
+  }
+  .finale-stanza {
+    font-family: var(--body);
+    font-size: 1.15rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--yellow);
+    letter-spacing: 0.04em;
+    line-height: 2;
+    text-shadow: 0 0 25px rgba(240,192,64,0.15);
+    margin-bottom: 24px;
+    white-space: pre-wrap;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .finale-stanza:last-child { margin-bottom: 0; }
+  .finale-stanza.visible {
+    animation: stanzaFadeIn 1.5s ease forwards;
+  }
+  @keyframes stanzaFadeIn {
+    0% { opacity: 0; transform: translateY(16px); filter: blur(4px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  @media (max-width: 650px) {
+    header, .instructions-banner { padding-left: 20px; padding-right: 20px; }
+    main { padding: 24px 16px 60px; }
+    .logo { font-size: 1.8rem; }
+    .riddle-input-row { flex-direction: column; }
+    .subtitle-arch { font-size: 1.1rem; }
+    .poem-line-text { font-size: 0.9rem; }
+    #finale-panel { padding: 24px 20px; }
+    .finale-stanza { font-size: 0.95rem; }
+  }
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="vignette"></div>
+<div class="content-wrap">
+<header>
+  <div class="logo">THE <span>STORYTELLER</span></div>
+  <div class="subtitle-arch">A Demigod</div>
+  <div class="subtitle-line" style="margin-top:10px;">LEGENDS OF RUNETERRA · LND COMMUNITY EVENT · LCS #11</div>
+  <div class="subtitle-line" style="margin-top:2px;">Presented by Storyteller & Lawa · Chapter V</div>
+</header>
+<div class="instructions-banner">
+  <div class="instructions-text">
+    Each riddle describes a Legends of Runeterra champion. Wrong guesses evolve the riddle and trigger a 3-minute cooldown. Every solved riddle reveals a line of the hidden poem. <strong>Solve them all to uncover the next STORYTELLER.</strong>
+  </div>
+</div>
+<main>
+  <div class="discord-block">
+    <div class="field-label">Discord Username</div>
+    <input type="text" id="discord-input" placeholder="Enter your Discord name" autocomplete="off" />
+    <div class="hint">Your name will be stored alongside your answers</div>
+    <button class="submit-btn" id="confirm-btn" onclick="confirmDiscord()" style="width:auto;padding:14px 36px;">▶ ENTER</button>
+  </div>
+  <div id="info-box" class="info-box error"></div>
+  <div id="cipher-section" style="display:none;">
+    <div class="section-title">CHAMPION CIPHER — 11 RIDDLES</div>
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-label">Solved</span>
+        <span class="progress-count" id="progress-count">0 / 11</span>
+      </div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-bar"></div></div>
+    </div>
+    <div class="riddles-grid" id="riddles-grid"></div>
+    <div id="finale-panel">
+      <div class="finale-title">◈ A DEMIGOD ◈</div>
+      <div class="finale-subtitle">The cipher is complete — the poem has been revealed</div>
+      <div class="finale-poem" id="finale-poem"></div>
+    </div>
+  </div>
+</main>
+</div>
+<script>
+const POEM_LINES=["Where the ground forgot to rise in time,","he still found something worth the climb.","Sidestepped the world,","took his own path,","and left behind a powerful wrath.","He bent the component with a flash of light,","and turned the moment toward what was right.","Where many have tried.","One held the tide.","Faced the flood with pride.","Every wave, he survived."];
+const RIDDLES=[
+{layers:["Surrounded by darkness,\nyet I am not heartless.","Small body,\nsurrounded by darkness,\nyet I am not heartless.","Small shadow,\nsurrounded by darkness,\nyet I am not heartless."],answer:"vex",name:"Vex"},
+{layers:["Before there was time I was born,\nby a cosmos I was sworn.","Before time as a god I was born,\nby a cosmos I was sworn.","Before time as a god I was born,\nby a cosmos I was sworn.\nListen to the sound of my horn."],answer:"bard",name:"Bard"},
+{layers:["I am in chains,\nanger is in my veins.","I am a monster in chains,\nanger is in my veins.","I am a monster in chains,\nanger is in my noxian veins."],answer:"sion",name:"Sion"},
+{layers:["For centuries old,\nbut quick as a bolt.","Small, for centuries old,\nbut quick as a bolt.","Small, for centuries old,\nbut quick as a lightning bolt."],answer:"kennen",name:"Kennen"},
+{layers:["I am all alone in this fight,\nlet me teach you as my knight.","I am all alone in this style.\nI very well know how to fight,\nlet me teach you as my knight.","I am all alone in this ancient style.\nI very well know how to fight,\nlet me teach you as my knight."],answer:"master yi",name:"Master Yi"},
+{layers:["As Runeterran demigod,\nmy body is stone-hard.","As Runeterran demigod,\nmy cold body is stone-hard.","As winged Runeterran demigod,\nmy cold body is stone-hard."],answer:"anivia",name:"Anivia"},
+{layers:["I know who you are sister,\nbut I must not whisper.","I know who you are my sister,\nyour secret I must not whisper.","I know you are a mage my sister,\nyour secret I must not whisper."],answer:"garen",name:"Garen"},
+{layers:["In my land,\nI am a star,\nit's so bizarre.","In my land,\nI am a star,\nit's so bizarre.\nI have my scar.","In my land,\nI am a star,\nit's so bizarre.\nI have my scar,\nover my eye."],answer:"katarina",name:"Katarina"},
+{layers:["I am looking for my father,\nthe one who left my mother.","I am looking for my Vastayan father,\nthe one who left my mother.","I am looking for my Vastayan father,\nthe one who left my Ionian mother."],answer:"sett",name:"Sett"},
+{layers:["I always wake up stronger,\nonly a war can satisfy my hunger.","I always wake up in my armor stronger,\nonly a war can satisfy my dark hunger.","I always wake up with my mace, in my armor, stronger,\nonly a war can satisfy my dark hunger."],answer:"mordekaiser",name:"Mordekaiser"},
+{layers:["Only a winner,\na bit of a sinner.","Only a winner,\na bit of a gambler sinner.","Only a coin winner,\na bit of a gambler sinner."],answer:"jack",name:"Jack"}
+];
+const COOLDOWN_MS=3*60*1000,STORAGE_KEY="storyteller_ch5_v1",COMP_KEY="storyteller_ch5_completions",WORD1="TOURNAMENT",WORD2="ORGANIZER";
+// ▼▼▼ PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ▼▼▼
+const WEBHOOK_URL="https://script.google.com/macros/s/AKfycbwjaPpJpysL8UjBAaE0PJTvedA9unv1tnc8EqI5GtO8bZUEjdX_4i_Hfws3lAEiCGp2/exec";
+function buildAssignmentTable(){const w1=WORD1.split(""),w2=WORD2.split("");function ss(a,seed){const r=[...a];let s=seed;for(let i=r.length-1;i>0;i--){s=(s*1664525+1013904223)&0xffffffff;const j=Math.abs(s)%(i+1);[r[i],r[j]]=[r[j],r[i]];}return r;}const s1=ss(w1,42);let s2,sd=137;for(let t=0;t<1000;t++){s2=ss(w2,sd);let v=true;for(let i=0;i<9;i++){if(s2[i]===s1[i]){v=false;break;}}if(v)break;sd+=31;}const tbl=[];for(let i=0;i<10;i++)tbl.push({l1:s1[i],l2:i<9?s2[i]:null});return tbl;}
+const ASSIGNMENT_TABLE=buildAssignmentTable();
+
+// Particles
+(function(){const c=document.getElementById('particles'),x=c.getContext('2d');let W,H;const ps=[];const N=55;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}resize();window.addEventListener('resize',resize);for(let i=0;i<N;i++)ps.push({x:Math.random()*(W||1000),y:Math.random()*(H||800),vx:(Math.random()-0.5)*0.3,vy:-Math.random()*0.4-0.1,sz:Math.random()*2+0.5,a:Math.random()*0.35+0.1,h:Math.random()>0.7?10:42});function draw(){x.clearRect(0,0,W,H);for(const p of ps){p.x+=p.vx;p.y+=p.vy;p.a+=(Math.random()-0.5)*0.01;p.a=Math.max(0.05,Math.min(0.45,p.a));if(p.y<-10){p.y=H+10;p.x=Math.random()*W;}if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;x.beginPath();x.arc(p.x,p.y,p.sz,0,Math.PI*2);const cl=p.h===42?`rgba(240,192,64,${p.a})`:`rgba(224,80,48,${p.a})`;x.fillStyle=cl;x.shadowBlur=8;x.shadowColor=cl;x.fill();}x.shadowBlur=0;requestAnimationFrame(draw);}draw();})();
+
+// State
+let currentDiscord="",cooldownIntervals={};
+function loadData(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}}");}catch{return{};}}
+function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}
+function loadCompletions(){try{return JSON.parse(localStorage.getItem(COMP_KEY)||"[]");}catch{return[];}}
+function saveCompletions(a){localStorage.setItem(COMP_KEY,JSON.stringify(a));}
+function getUserState(dk){const d=loadData();if(!d[dk]){d[dk]={riddles:RIDDLES.map(()=>({solved:false,layer:0,cooldownUntil:0})),solvedCount:0};saveData(d);}return d[dk];}
+
+// Google Sheets logging
+function logToSheet(action,data){
+  if(!WEBHOOK_URL)return;
+  try{
+    fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action,discord:currentDiscord,timestamp:new Date().toISOString(),...data})
+    });
+  }catch(e){console.log('Webhook error:',e);}
+}
+function buildGrid(){
+  const grid=document.getElementById('riddles-grid');grid.innerHTML='';
+  const stanzaEnds=[1,4,6]; // last card index of each stanza (except final)
+  RIDDLES.forEach((r,i)=>{
+    const card=document.createElement('div');
+    card.className='riddle-card'+(stanzaEnds.includes(i)?' stanza-end':'');
+    card.id=`card-${i}`;
+    card.innerHTML=`
+      <div class="layer-indicator layer-1" id="layer-ind-${i}">LAYER 1/3</div>
+      <div class="riddle-header">
+        <div class="riddle-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="riddle-status-badge badge-unsolved" id="badge-${i}">UNSOLVED</div>
+      </div>
+      <div class="riddle-body">
+        <div class="riddle-text-content" id="text-${i}">${r.layers[0].replace(/\n/g,'<br>')}</div>
+        <div class="riddle-input-row" id="input-row-${i}">
+          <input type="text" id="ans-${i}" placeholder="Champion name..." autocomplete="off" spellcheck="false"/>
+          <button class="riddle-guess-btn" id="btn-${i}" onclick="guessRiddle(${i})">GUESS</button>
+        </div>
+        <div class="cooldown-bar-wrap" id="cd-bar-wrap-${i}"><div class="cooldown-bar" id="cd-bar-${i}"></div></div>
+        <div class="cooldown-text" id="cd-text-${i}"></div>
+        <div class="poem-line-reveal" id="poem-line-${i}">
+          <div class="poem-line-text" id="poem-text-${i}"></div>
+          <div class="solved-champ-name" id="solved-name-${i}"></div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function restoreState(){
+  const dk=currentDiscord.toLowerCase(),state=getUserState(dk);let sc=0;
+  state.riddles.forEach((rs,i)=>{
+    const t=document.getElementById(`text-${i}`),li=Math.min(rs.layer,2);
+    t.innerHTML=RIDDLES[i].layers[li].replace(/\n/g,'<br>');
+    updateLayerIndicator(i,li);
+    if(rs.solved){markSolvedInstant(i);sc++;}
+    else if(rs.cooldownUntil>Date.now())startCooldownUI(i,rs.cooldownUntil);
+  });
+  state.solvedCount=sc;const d=loadData();d[dk]=state;saveData(d);
+  updateProgress(sc);
+  if(sc===RIDDLES.length)setTimeout(()=>showFinale(),600);
+}
+
+function guessRiddle(i){
+  const dk=currentDiscord.toLowerCase(),data=loadData(),state=data[dk],rs=state.riddles[i];
+  if(rs.solved||rs.cooldownUntil>Date.now())return;
+  const input=document.getElementById(`ans-${i}`),guess=input.value.trim().toLowerCase();
+  if(!guess)return;
+  const card=document.getElementById(`card-${i}`);
+  if(guess===RIDDLES[i].answer){
+    rs.solved=true;state.solvedCount=state.riddles.filter(r=>r.solved).length;saveData(data);
+    logToSheet('solve',{riddle:i+1,champion:RIDDLES[i].name,layer:rs.layer+1,guess,solvedCount:state.solvedCount});
+    markSolvedAnimated(i);updateProgress(state.solvedCount);
+    if(state.solvedCount===RIDDLES.length)setTimeout(()=>showFinale(),2500);
+  }else{
+    logToSheet('wrong',{riddle:i+1,guess,layer:rs.layer+1});
+    card.classList.add('wrong-flash');setTimeout(()=>card.classList.remove('wrong-flash'),600);
+    if(rs.layer<2){rs.layer++;setTimeout(()=>{const t=document.getElementById(`text-${i}`);card.classList.add('layer-shift');t.innerHTML=RIDDLES[i].layers[rs.layer].replace(/\n/g,'<br>');updateLayerIndicator(i,rs.layer);setTimeout(()=>card.classList.remove('layer-shift'),900);},400);}
+    rs.cooldownUntil=Date.now()+COOLDOWN_MS;saveData(data);input.value='';startCooldownUI(i,rs.cooldownUntil);
+  }
+}
+
+function updateLayerIndicator(i,layer){const el=document.getElementById(`layer-ind-${i}`);el.textContent=`LAYER ${layer+1}/3`;el.className=`layer-indicator layer-${layer+1}`;}
+
+function markSolvedInstant(i){
+  const card=document.getElementById(`card-${i}`),badge=document.getElementById(`badge-${i}`);
+  const inputRow=document.getElementById(`input-row-${i}`),cdText=document.getElementById(`cd-text-${i}`);
+  const cdBarWrap=document.getElementById(`cd-bar-wrap-${i}`),layerInd=document.getElementById(`layer-ind-${i}`);
+  const textC=document.getElementById(`text-${i}`),poemLine=document.getElementById(`poem-line-${i}`);
+  const poemText=document.getElementById(`poem-text-${i}`),solvedName=document.getElementById(`solved-name-${i}`);
+  card.classList.add('solved');badge.className='riddle-status-badge badge-solved';badge.textContent='SOLVED';
+  inputRow.style.display='none';cdText.textContent='';cdBarWrap.classList.remove('active');
+  layerInd.style.display='none';textC.style.display='none';
+  poemLine.classList.add('visible');poemText.textContent=POEM_LINES[i];
+  solvedName.textContent=`✓ ${RIDDLES[i].name}`;
+  if(cooldownIntervals[i]){clearInterval(cooldownIntervals[i]);delete cooldownIntervals[i];}
+}
+
+function markSolvedAnimated(i){
+  const card=document.getElementById(`card-${i}`),badge=document.getElementById(`badge-${i}`);
+  const inputRow=document.getElementById(`input-row-${i}`),cdText=document.getElementById(`cd-text-${i}`);
+  const cdBarWrap=document.getElementById(`cd-bar-wrap-${i}`),layerInd=document.getElementById(`layer-ind-${i}`);
+  const textC=document.getElementById(`text-${i}`),poemLine=document.getElementById(`poem-line-${i}`);
+  const poemText=document.getElementById(`poem-text-${i}`),solvedName=document.getElementById(`solved-name-${i}`);
+  if(cooldownIntervals[i]){clearInterval(cooldownIntervals[i]);delete cooldownIntervals[i];}
+
+  // Subtle warm glow animation
+  card.classList.add('solve-glow','solved');
+  badge.className='riddle-status-badge badge-solved';badge.textContent='SOLVED';
+  inputRow.style.display='none';cdText.textContent='';cdBarWrap.classList.remove('active');layerInd.style.display='none';
+
+  // Riddle text gently fades and blurs
+  textC.style.transition='opacity 1s ease, filter 1s ease';
+  textC.style.opacity='0';
+  textC.style.filter='blur(6px)';
+
+  // Pause for emotion, then typewrite poem line
+  setTimeout(()=>{
+    textC.style.display='none';
+    poemLine.classList.add('visible');
+    poemText.classList.add('typewriting');
+
+    typewriteLine(poemText,POEM_LINES[i],()=>{
+      solvedName.textContent=`✓ ${RIDDLES[i].name}`;
+      solvedName.style.animation='layerReveal 0.5s ease forwards';
+    });
+  },1200);
+}
+
+function typewriteLine(el,text,cb){
+  el.innerHTML='';let idx=0;const cur=document.createElement('span');cur.className='poem-line-cursor';
+  function t(){if(idx<text.length){el.appendChild(document.createTextNode(text[idx]));idx++;if(cur.parentNode)cur.parentNode.removeChild(cur);el.appendChild(cur);setTimeout(t,35+Math.random()*30);}else{setTimeout(()=>{if(cur.parentNode)cur.parentNode.removeChild(cur);if(cb)cb();},500);}}t();
+}
+
+function startCooldownUI(i,until){
+  const btn=document.getElementById(`btn-${i}`),input=document.getElementById(`ans-${i}`);
+  const badge=document.getElementById(`badge-${i}`),cdText=document.getElementById(`cd-text-${i}`);
+  const cdBarWrap=document.getElementById(`cd-bar-wrap-${i}`),cdBar=document.getElementById(`cd-bar-${i}`);
+  btn.disabled=true;input.disabled=true;badge.className='riddle-status-badge badge-cooldown';badge.textContent='COOLDOWN';cdBarWrap.classList.add('active');
+  if(cooldownIntervals[i])clearInterval(cooldownIntervals[i]);
+  function tick(){const now=Date.now(),rem=until-now;if(rem<=0){btn.disabled=false;input.disabled=false;input.value='';badge.className='riddle-status-badge badge-unsolved';badge.textContent='UNSOLVED';cdText.textContent='';cdBarWrap.classList.remove('active');cdBar.style.width='0%';clearInterval(cooldownIntervals[i]);delete cooldownIntervals[i];return;}const pct=((COOLDOWN_MS-rem)/COOLDOWN_MS)*100;cdBar.style.width=pct+'%';const s=Math.ceil(rem/1000),m=Math.floor(s/60),ss=s%60;cdText.textContent=`COOLDOWN: ${m}:${String(ss).padStart(2,'0')}`;}
+  tick();cooldownIntervals[i]=setInterval(tick,500);
+}
+
+function updateProgress(c){document.getElementById('progress-count').textContent=`${c} / ${RIDDLES.length}`;document.getElementById('progress-bar').style.width=((c/RIDDLES.length)*100)+'%';}
+
+function showFinale(){
+  const p=document.getElementById('finale-panel');p.style.display='block';
+
+  // Collapse riddle cards with staggered fade
+  const cards=document.querySelectorAll('.riddle-card');
+  cards.forEach((card,i)=>{
+    setTimeout(()=>{
+      card.style.transition='opacity 0.6s ease, max-height 0.8s ease, margin 0.8s ease, padding 0.8s ease';
+      card.style.opacity='0';
+      card.style.maxHeight='0';
+      card.style.marginBottom='0';
+      card.style.overflow='hidden';
+      card.style.padding='0';
+      card.style.border='none';
+    }, i*80);
+  });
+  // Also hide progress bar
+  setTimeout(()=>{
+    const prog=document.querySelector('.progress-section');
+    if(prog){prog.style.transition='opacity 0.5s ease';prog.style.opacity='0';setTimeout(()=>prog.style.display='none',500);}
+  }, cards.length*80+200);
+
+  // Scroll to finale panel
+  setTimeout(()=>{
+    p.scrollIntoView({behavior:'smooth',block:'start'});
+  }, cards.length*80+600);
+
+  // Build the full poem with stanza groupings
+  const stanzas=[
+    "Where the ground forgot to rise in time,\nhe still found something worth the climb.",
+    "Sidestepped the world,\ntook his own path,\nand left behind a powerful wrath.",
+    "He bent the component with a flash of light,\nand turned the moment toward what was right.",
+    "Where many have tried.\nOne held the tide.\nFaced the flood with pride.\nEvery wave, he survived."
+  ];
+
+  const startDelay=cards.length*80+1000;
+  const container=document.getElementById('finale-poem');
+  container.innerHTML='';
+
+  stanzas.forEach((text,si)=>{
+    const div=document.createElement('div');
+    div.className='finale-stanza';
+    container.appendChild(div);
+
+    setTimeout(()=>{
+      div.style.opacity='1';
+      div.style.transform='none';
+      div.style.filter='none';
+      div.innerHTML='';
+      let idx=0;
+      const cursor=document.createElement('span');
+      cursor.className='poem-line-cursor';
+
+      function typeChar(){
+        if(idx<text.length){
+          const ch=text[idx];
+          if(ch==='\n'){div.appendChild(document.createElement('br'));}
+          else{div.appendChild(document.createTextNode(ch));}
+          idx++;
+          if(cursor.parentNode)cursor.parentNode.removeChild(cursor);
+          div.appendChild(cursor);
+          setTimeout(typeChar,30+Math.random()*25);
+        }else{
+          setTimeout(()=>{
+            if(cursor.parentNode)cursor.parentNode.removeChild(cursor);
+          },400);
+        }
+      }
+      typeChar();
+    }, startDelay+si*3500);
+  });
+}
+
+function showInfo(m,t){const b=document.getElementById('info-box');b.textContent=m;b.className=`info-box ${t} show`;}
+function hideInfo(){document.getElementById('info-box').className='info-box';}
+
+function confirmDiscord(){
+  const raw=document.getElementById('discord-input').value.trim();
+  if(!raw){showInfo('⚠ Please enter your Discord username.','error');return;}
+  currentDiscord=raw;document.getElementById('discord-input').disabled=true;document.getElementById('confirm-btn').style.display='none';hideInfo();
+  logToSheet('login',{});
+  const s=document.getElementById('cipher-section');s.style.display='block';s.style.opacity='0';s.style.transform='translateY(12px)';s.style.transition='opacity 0.5s ease, transform 0.5s ease';
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{s.style.opacity='1';s.style.transform='translateY(0)';});});
+  setTimeout(()=>{document.querySelectorAll('.riddle-card').forEach((c,i)=>{setTimeout(()=>c.classList.add('entered'),i*100);});},300);
+  setTimeout(()=>restoreState(),250);
+  setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'start'}),200);
+}
+
+buildGrid();
+document.getElementById('discord-input').addEventListener('keydown',e=>{if(e.key==='Enter')confirmDiscord();});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id?.startsWith('ans-'))guessRiddle(parseInt(e.target.id.split('-')[1]));});
+
+window.storyAdmin=function(){const d=loadData();if(!Object.keys(d).length){console.log('No data.');return;}console.group('📋 STORYTELLER CH5');Object.entries(d).forEach(([k,v])=>{const s=v.riddles.filter(r=>r.solved).length;console.group(`👤 ${k} — ${s}/${RIDDLES.length}`);v.riddles.forEach((rs,i)=>console.log(`  R${i+1}: ${rs.solved?'✓ '+RIDDLES[i].name:'✗ L'+(rs.layer+1)}`));console.groupEnd();});console.groupEnd();return d;};
+window.storyReset=function(){localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(COMP_KEY);console.log('✓ All CH5 data cleared.');};
+</script>
+</body>
+</html>
